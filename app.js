@@ -51,6 +51,8 @@ app.get("/", function (req, res) {
     });
 
   })
+
+  
 });
 
 app.get("/about", function (req, res) {
@@ -77,11 +79,26 @@ app.post("/compose", function (req, res) {
 
   });
 
-  post.save();
-
-  res.redirect("/");
-
+  post.save(function(err){
+    if (!err){
+        res.redirect("/");
+    }
+  });
 });
+
+app.get("/posts/:postId", function(req, res){
+
+  const requestedPostId = req.params.postId;
+  
+    Post.findOne({_id: requestedPostId}, function(err, post){
+      res.render("post", {
+        title: post.title,
+        content: post.content
+      });
+    });
+  
+  });
+
 
 app.get("/posts/:postName", function (req, res) {
   const requestedTitle = _.lowerCase(req.params.postName);
